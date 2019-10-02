@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"ffuf/pkg/ffuf"
+	"github.com/jaesbit/ffuf/pkg/ffuf"
 )
 
 const (

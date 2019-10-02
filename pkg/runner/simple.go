@@ -11,7 +11,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"ffuf/pkg/ffuf"
+	"github.com/jaesbit/ffuf/pkg/ffuf"
 )
 
 //Download results < 5MB

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"ffuf/pkg/ffuf"
+	"github.com/jaesbit/ffuf/pkg/ffuf"
 )
 
 func TestNewSizeFilter(t *testing.T) {

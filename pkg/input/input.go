@@ -1,7 +1,7 @@
 package input
 
 import (
-	"ffuf/pkg/ffuf"
+	"github.com/jaesbit/ffuf/pkg/ffuf"
 )
 
 func NewInputProviderByName(name string, conf *ffuf.Config) (ffuf.InputProvider, error) {

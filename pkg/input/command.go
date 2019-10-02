@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strconv"
 
-	"ffuf/pkg/ffuf"
+	"github.com/jaesbit/ffuf/pkg/ffuf"
 )
 
 type CommandInput struct {

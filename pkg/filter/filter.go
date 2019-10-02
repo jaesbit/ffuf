@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"ffuf/pkg/ffuf"
+	"github.com/jaesbit/ffuf/pkg/ffuf"
 )
 
 func NewFilterByName(name string, value string) (ffuf.FilterProvider, error) {

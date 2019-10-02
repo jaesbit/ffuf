@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"time"
 
-	"ffuf/pkg/ffuf"
+	"github.com/jaesbit/ffuf/pkg/ffuf"
 )
 
 type jsonFileOutput struct {

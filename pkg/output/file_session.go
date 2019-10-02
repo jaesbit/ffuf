@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"ffuf/pkg/ffuf"
+	"github.com/jaesbit/ffuf/pkg/ffuf"
 )
 
 type Session struct {

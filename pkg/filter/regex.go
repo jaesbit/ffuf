@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"ffuf/pkg/ffuf"
+	"github.com/jaesbit/ffuf/pkg/ffuf"
 )
 
 type RegexpFilter struct {

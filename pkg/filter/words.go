@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"ffuf/pkg/ffuf"
+	"github.com/jaesbit/ffuf/pkg/ffuf"
 )
 
 type WordFilter struct {
