@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ffuf/ffuf/pkg/ffuf"
+	"ffuf/pkg/ffuf"
 )
 
 const (
@@ -24,6 +24,7 @@ const (
 type Stdoutput struct {
 	config  *ffuf.Config
 	Results []Result
+	Session	*Session
 }
 
 type Result struct {
@@ -38,6 +39,7 @@ func NewStdoutput(conf *ffuf.Config) *Stdoutput {
 	var outp Stdoutput
 	outp.config = conf
 	outp.Results = []Result{}
+	outp.Session = NewSession(conf)
 	return &outp
 }
 
@@ -118,6 +120,7 @@ func (s *Stdoutput) Finalize() error {
 		}
 	}
 	fmt.Fprintf(os.Stderr, "\n")
+	s.Session.Close()
 	return nil
 }
 
@@ -135,6 +138,9 @@ func (s *Stdoutput) Result(resp ffuf.Response) {
 			ContentWords:  resp.ContentWords,
 		}
 		s.Results = append(s.Results, sResult)
+		if s.config.OutputFormat == "full" {
+			s.Session.Update(resp)
+		}
 	}
 }
 
