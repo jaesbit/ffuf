@@ -10,11 +10,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ffuf/ffuf/pkg/ffuf"
-	"github.com/ffuf/ffuf/pkg/filter"
-	"github.com/ffuf/ffuf/pkg/input"
-	"github.com/ffuf/ffuf/pkg/output"
-	"github.com/ffuf/ffuf/pkg/runner"
+	"ffuf/pkg/ffuf"
+	"ffuf/pkg/filter"
+	"ffuf/pkg/input"
+	"ffuf/pkg/output"
+	"ffuf/pkg/runner"
 )
 
 type cliOptions struct {
@@ -81,7 +81,7 @@ func main() {
 	flag.StringVar(&opts.proxyURL, "x", "", "HTTP Proxy URL")
 	flag.StringVar(&conf.Method, "X", "GET", "HTTP method to use")
 	flag.StringVar(&conf.OutputFile, "o", "", "Write output to file")
-	flag.StringVar(&opts.outputFormat, "of", "json", "Output file format. Available formats: json, csv, ecsv")
+	flag.StringVar(&opts.outputFormat, "of", "full", "Output file format. Available formats: json, csv, ecsv, full")
 	flag.BoolVar(&conf.Quiet, "s", false, "Do not print additional information (silent mode)")
 	flag.BoolVar(&conf.StopOn403, "sf", false, "Stop when > 95% of responses return 403 Forbidden")
 	flag.BoolVar(&conf.StopOnErrors, "se", false, "Stop on spurious errors")
@@ -271,7 +271,7 @@ func prepareConfig(parseOpts *cliOptions, conf *ffuf.Config) error {
 	//Check the output file format option
 	if conf.OutputFile != "" {
 		//No need to check / error out if output file isn't defined
-		outputFormats := []string{"json", "csv", "ecsv"}
+		outputFormats := []string{"json", "csv", "ecsv", "full"}
 		found := false
 		for _, f := range outputFormats {
 			if f == parseOpts.outputFormat {

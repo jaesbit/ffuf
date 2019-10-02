@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ffuf/ffuf/pkg/ffuf"
+	"ffuf/pkg/ffuf"
 )
 
 const AllStatuses = 0

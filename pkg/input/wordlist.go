@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ffuf/ffuf/pkg/ffuf"
+	"ffuf/pkg/ffuf"
 )
 
 type WordlistInput struct {
