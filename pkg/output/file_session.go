@@ -2,17 +2,20 @@ package output
 
 import (
 	// "log"
-	"os"
 	"fmt"
+	"net/http"
+	"net/url"
+	"os"
 	"strings"
 
 	"github.com/jaesbit/ffuf/pkg/ffuf"
 )
 
 type Session struct {
-	handle  *os.File
-	enabled bool
-	size  int
+	handle    *os.File
+	enabled   bool
+	size      int
+	delimiter string
 }
 
 func NewSession(conf *ffuf.Config) *Session {
@@ -25,6 +28,7 @@ func NewSession(conf *ffuf.Config) *Session {
 		} else {
 			sess.enabled = true
 			sess.size = 54
+			sess.delimiter = strings.Repeat("~", sess.size) + "\n"
 		}
 
 	} else {
@@ -45,46 +49,71 @@ func (sess *Session) Close() error {
 func (sess *Session) Update(res ffuf.Response) error {
 
 	if sess.enabled {
-
-		sess.WriteRequest(res.Request, res.StatusCode)
+		sess.handle.WriteString(sess.delimiter)
+		sess.WriteResume(&res)
+		sess.handle.WriteString("----\n")
+		sess.WriteRequest(res.Request)
+		sess.handle.WriteString("\n----\n")
 		sess.WriteResponse(&res)
-
-
+		sess.handle.WriteString("\n")
 	}
 	return nil
 }
 
+func (sess *Session) WriteResume(req *ffuf.Response) {
+	var data = fmt.Sprintf(
+		"%s %v\nMethod: %s, Size: %v, Words: %v\n",
+		req.Request.Url,
+		req.StatusCode,
+		req.Request.Method,
+		req.ContentLength,
+		req.ContentWords,
+	)
+	sess.handle.WriteString(data)
+}
+
 func (sess *Session) WriteResponse(req *ffuf.Response) {
 
-	var head =  ""
+	var head = fmt.Sprintf("HTTP/1.1 %v %s\n",
+		req.StatusCode,
+		http.StatusText(int(req.StatusCode)),
+	)
+
 	for key, value := range req.Headers {
-		head += fmt.Sprintf("%s: %s\n", key, value)
+		head += fmt.Sprintf("%s: %s\n", key, strings.Join(value, " "))
 
 	}
-	head += "\n\n"
-	if _, err := sess.handle.WriteString(head); err != nil {
-	}
-	if _, err := sess.handle.Write(req.Data); err != nil {
-	}
-	// head = strings.Repeat("*", sess.size)
-	head = "\n\n"
-	if _, err := sess.handle.WriteString(head); err != nil {
-	}
+	head += "\n"
+	sess.handle.WriteString(head)
+	sess.handle.Write(req.Data)
 }
 
+func (sess *Session) WriteRequest(req *ffuf.Request) {
 
-func (sess *Session) WriteRequest(req *ffuf.Request, status int64) {
+	u, err := url.Parse(req.Url)
 
-	var head = strings.Repeat("~", sess.size)
-	head += fmt.Sprintf("\n%s %s %v\n", req.Method, req.Url, status)
+	if err != nil {
+		panic(err)
+	}
+
+	var head = fmt.Sprintf("%s %s HTTP/1.1\n", req.Method, u.Path)
 	for key, value := range req.Headers {
 		head += fmt.Sprintf("%s: %s\n", key, value)
-
 	}
-	head += strings.Repeat("~", sess.size)
-	head += "\n\n"
-	if _, err := sess.handle.WriteString(head); err != nil {
+
+	if !strings.Contains(head, "Host:") {
+		var port = ""
+		if u.Port() != "" {
+			port = fmt.Sprintf(":%v", u.Port())
+		}
+		head += fmt.Sprintf("Host: %s%s\n", u.Hostname(), port)
+	}
+
+	head += "\n"
+	sess.handle.WriteString(head)
+
+	if len(req.Data) > 0 {
+		sess.handle.Write(req.Data)
 	}
 
 }
-
